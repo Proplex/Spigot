@@ -1,0 +1,60 @@
+From 63b41a9f450f93be9429ee1e0e3eb5413b911caa Mon Sep 17 00:00:00 2001
+From: md_5 <md_5@live.com.au>
+Date: Thu, 8 Aug 2013 17:46:43 +1000
+Subject: [PATCH] HashMap Based Player Lookup
+
+
+diff --git a/src/main/java/org/spigotmc/util/CaseInsensitiveHash.java b/src/main/java/org/spigotmc/util/CaseInsensitiveHash.java
+new file mode 100644
+index 0000000..6cd1beb
+--- /dev/null
++++ b/src/main/java/org/spigotmc/util/CaseInsensitiveHash.java
+@@ -0,0 +1,21 @@
++package org.spigotmc.util;
++
++import gnu.trove.strategy.HashingStrategy;
++
++class CaseInsensitiveHash implements HashingStrategy
++{
++
++    static final CaseInsensitiveHash INSTANCE = new CaseInsensitiveHash();
++
++    @Override
++    public int computeHashCode(Object object)
++    {
++        return ( (String) object ).toLowerCase().hashCode();
++    }
++
++    @Override
++    public boolean equals(Object o1, Object o2)
++    {
++        return o1.equals( o2 ) || ( o1 instanceof String && o2 instanceof String && ( (String) o1 ).toLowerCase().equals( ( (String) o2 ).toLowerCase() ) );
++    }
++}
+diff --git a/src/main/java/org/spigotmc/util/CaseInsensitiveMap.java b/src/main/java/org/spigotmc/util/CaseInsensitiveMap.java
+new file mode 100644
+index 0000000..0d7182c
+--- /dev/null
++++ b/src/main/java/org/spigotmc/util/CaseInsensitiveMap.java
+@@ -0,0 +1,18 @@
++package org.spigotmc.util;
++
++import gnu.trove.map.hash.TCustomHashMap;
++import java.util.Map;
++
++public class CaseInsensitiveMap<V> extends TCustomHashMap<String, V>
++{
++
++    public CaseInsensitiveMap()
++    {
++        super( CaseInsensitiveHash.INSTANCE );
++    }
++
++    public CaseInsensitiveMap(Map<? extends String, ? extends V> map)
++    {
++        super( CaseInsensitiveHash.INSTANCE, map );
++    }
++}
+-- 
+1.8.1.2
+
