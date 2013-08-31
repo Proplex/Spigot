@@ -1,4 +1,4 @@
-From 3c7f43e649d3e15939a321426a27eb5dbabddfea Mon Sep 17 00:00:00 2001
+From 13ef3cd3fabbc4fcb246861fef89a42ec8841404 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Thu, 16 May 2013 18:51:05 +1000
 Subject: [PATCH] Orebfuscator
@@ -108,7 +108,7 @@ index a7afa55..1a60229 100644
  
 diff --git a/src/main/java/org/spigotmc/AntiXray.java b/src/main/java/org/spigotmc/AntiXray.java
 new file mode 100644
-index 0000000..c165304
+index 0000000..47195f2
 --- /dev/null
 +++ b/src/main/java/org/spigotmc/AntiXray.java
 @@ -0,0 +1,204 @@
@@ -227,7 +227,7 @@ index 0000000..c165304
 +                                // TODO: extended IDs are not yet supported
 +                                int blockId = buffer[index] & 0xFF;
 +                                // Check if the block should be obfuscated
-+                                if ( obfuscateBlocks[blockId] )
++                                if ( ( world.spigotConfig.engineMode == 1 && obfuscateBlocks[blockId] ) || ( world.spigotConfig.engineMode == 2 && blockId == 1 ) )
 +                                {
 +                                    // TODO: Don't really understand this, but if radius is not 0 and the world isn't loaded, bail out
 +                                    if ( initialRadius != 0 && !isLoaded( world, startX + x, ( i << 4 ) + y, startZ + z, initialRadius ) )
@@ -317,7 +317,7 @@ index 0000000..c165304
 +    }
 +}
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-index 3e66d79..bab9d8f 100644
+index 3e66d79..33c1eda 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
 @@ -1,5 +1,6 @@
@@ -336,7 +336,7 @@ index 3e66d79..bab9d8f 100644
 +    public int engineMode = 1;
 +    public List<Integer> blocks = Arrays.asList( new Integer[]
 +    {
-+        1, 5, 14, 15, 16, 21, 48, 49, 54, 56, 73, 74, 82, 129, 130
++        14, 15, 16, 21, 48, 49, 54, 56, 73, 74, 82, 129, 130
 +    } );
 +    public AntiXray antiXrayInstance;
 +    private void antiXray()
@@ -347,7 +347,7 @@ index 3e66d79..bab9d8f 100644
 +        engineMode = getInt( "anti-xray.engine-mode", engineMode );
 +        log( "\tEngine Mode: " + engineMode );
 +
-+        if ( SpigotConfig.version < 3 )
++        if ( SpigotConfig.version < 4 )
 +        {
 +            set( "anti-xray.blocks", blocks );
 +        }
