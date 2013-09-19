@@ -1,0 +1,83 @@
+From a2b8a94796689544e814c8623164c31f0ad85775 Mon Sep 17 00:00:00 2001
+From: Proplex <horo@ipwnage.com>
+Date: Thu, 19 Sep 2013 18:02:53 -0400
+Subject: [PATCH] Let's try 1.6.4 faking again
+
+
+diff --git a/pom.xml b/pom.xml
+index 9e8310d..08d0312 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -20,8 +20,8 @@
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <api.version>unknown</api.version>
+     <junit.version>4.11</junit.version>
+-    <minecraft.version>1.6.3</minecraft.version>
+-    <minecraft_version>1_6_R3</minecraft_version>
++    <minecraft.version>1.6.4</minecraft.version>
++    <minecraft_version>1_6_R4</minecraft_version>
+   </properties>
+ 
+   <repositories>
+@@ -49,7 +49,7 @@
+     <dependency>
+       <groupId>org.spigotmc</groupId>
+       <artifactId>minecraft-server</artifactId>
+-      <version>1.6.3</version>
++      <version>1.6.4</version>
+       <type>jar</type>
+       <scope>compile</scope>
+     </dependency>
+diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
+index 2e3901c..52a56c8 100644
+--- a/src/main/java/net/minecraft/server/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/DedicatedServer.java
+@@ -48,7 +48,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+         System.setErr(new PrintStream(new LoggerOutputStream(this.getLogger().getLogger(), Level.SEVERE), true));
+         // CraftBukkit end
+ 
+-        this.getLogger().info("Starting minecraft server version 1.6.3");
++        this.getLogger().info("Starting minecraft server version 1.6.4");
+         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
+             this.getLogger().warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
+         }
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 964a168..2d8a654 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -764,7 +764,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
+     }
+ 
+     public String getVersion() {
+-        return "1.6.3";
++        return "1.6.4";
+     }
+ 
+     public int A() {
+diff --git a/src/main/java/net/minecraft/server/PendingConnection.java b/src/main/java/net/minecraft/server/PendingConnection.java
+index ee77687..baed4a6 100644
+--- a/src/main/java/net/minecraft/server/PendingConnection.java
++++ b/src/main/java/net/minecraft/server/PendingConnection.java
+@@ -77,8 +77,8 @@ public class PendingConnection extends Connection {
+             } else {
+                 PublicKey publickey = this.server.H().getPublic();
+ 
+-                if (packet2handshake.d() != 77) {
+-                    if (packet2handshake.d() > 77) {
++                if (packet2handshake.d() != 78) {
++                    if (packet2handshake.d() > 78) {
+                         this.disconnect(org.spigotmc.SpigotConfig.outdatedServerMessage); // Spigot
+                     } else {
+                         this.disconnect(org.spigotmc.SpigotConfig.outdatedClientMessage); // Spigot
+@@ -158,7 +158,7 @@ public class PendingConnection extends Connection {
+                 s = pingEvent.getMotd() + "\u00A7" + playerlist.getPlayerCount() + "\u00A7" + pingEvent.getMaxPlayers();
+             } else {
+                 // CraftBukkit start - Don't create a list from an array
+-                Object[] list = new Object[] { 1, 77, this.server.getVersion(), pingEvent.getMotd(), playerlist.getPlayerCount(), pingEvent.getMaxPlayers() };
++                Object[] list = new Object[] { 1, 78, this.server.getVersion(), pingEvent.getMotd(), playerlist.getPlayerCount(), pingEvent.getMaxPlayers() };
+ 
+                 StringBuilder builder = new StringBuilder();
+                 for (Object object : list) {
+-- 
+1.7.10.4
+
