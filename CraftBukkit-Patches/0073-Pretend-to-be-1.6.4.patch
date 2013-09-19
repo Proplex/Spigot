@@ -1,0 +1,35 @@
+From d2339ef970ee8a215fd88a1d62eeee7ff387665e Mon Sep 17 00:00:00 2001
+From: Proplex <horo@ipwnage.com>
+Date: Thu, 19 Sep 2013 17:22:24 -0400
+Subject: [PATCH] Pretend to be 1.6.4
+
+
+diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
+index 2e3901c..52a56c8 100644
+--- a/src/main/java/net/minecraft/server/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/DedicatedServer.java
+@@ -48,7 +48,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+         System.setErr(new PrintStream(new LoggerOutputStream(this.getLogger().getLogger(), Level.SEVERE), true));
+         // CraftBukkit end
+ 
+-        this.getLogger().info("Starting minecraft server version 1.6.3");
++        this.getLogger().info("Starting minecraft server version 1.6.4");
+         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
+             this.getLogger().warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
+         }
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 964a168..2d8a654 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -764,7 +764,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
+     }
+ 
+     public String getVersion() {
+-        return "1.6.3";
++        return "1.6.4";
+     }
+ 
+     public int A() {
+-- 
+1.7.10.4
+
