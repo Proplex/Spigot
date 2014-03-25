@@ -1,15 +1,15 @@
-From 8f375266d3bae960a7dca5ca52ac9d40d044239f Mon Sep 17 00:00:00 2001
+From 3424b3f7065054cdd942eb6ad56d86eab89e672a Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 7 Jul 2013 09:32:53 +1000
 Subject: [PATCH] Spigot Configuration
 
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index f871b73..0cca057 100644
+index 1b05fbf..7946703 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -90,6 +90,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
-         if (this.I() < 0) {
+@@ -109,6 +109,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+         if (this.K() < 0) {
              this.setPort(this.propertyManager.getInt("server-port", 25565));
          }
 +        // Spigot start
@@ -18,9 +18,9 @@ index f871b73..0cca057 100644
 +        org.spigotmc.SpigotConfig.registerCommands();
 +        // Spigot end
  
-         this.getLogger().info("Generating keypair");
+         h.info("Generating keypair");
          this.a(MinecraftEncryption.b());
-@@ -104,7 +109,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -123,7 +128,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
              return false;
          }
  
@@ -32,12 +32,12 @@ index f871b73..0cca057 100644
 +        // Spigot End
  
          if (!this.getOnlineMode()) {
-             this.getLogger().warning("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
+             h.warn("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 3924a5c..fbbfa33 100644
+index 2f514b5..96a3eb8 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -99,6 +99,7 @@ public abstract class World implements IBlockAccess {
+@@ -106,6 +106,7 @@ public abstract class World implements IBlockAccess {
      int lastXAccessed = Integer.MIN_VALUE;
      int lastZAccessed = Integer.MIN_VALUE;
      final Object chunkLock = new Object();
@@ -45,19 +45,19 @@ index 3924a5c..fbbfa33 100644
  
      public CraftWorld getWorld() {
          return this.world;
-@@ -110,6 +111,7 @@ public abstract class World implements IBlockAccess {
+@@ -117,6 +118,7 @@ public abstract class World implements IBlockAccess {
  
-     // Changed signature
-     public World(IDataManager idatamanager, String s, WorldSettings worldsettings, WorldProvider worldprovider, MethodProfiler methodprofiler, IConsoleLogManager iconsolelogmanager, ChunkGenerator gen, org.bukkit.World.Environment env) {
+     // Changed signature - added gen and env
+     public World(IDataManager idatamanager, String s, WorldSettings worldsettings, WorldProvider worldprovider, MethodProfiler methodprofiler, ChunkGenerator gen, org.bukkit.World.Environment env) {
 +        this.spigotConfig = new org.spigotmc.SpigotWorldConfig( s ); // Spigot
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
          this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index d9396f1..acd5b42 100644
+index 7aedef4..50a27fb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -214,8 +214,10 @@ public final class CraftServer implements Server {
+@@ -310,8 +310,10 @@ public final class CraftServer implements Server {
          updater.getOnUpdate().addAll(configuration.getStringList("auto-updater.on-update"));
          updater.check(serverVersion);
  
@@ -69,8 +69,8 @@ index d9396f1..acd5b42 100644
 +        // Spigot End
      }
  
-     private File getConfigFile() {
-@@ -560,6 +562,7 @@ public final class CraftServer implements Server {
+     public boolean getCommandBlockOverride(String command) {
+@@ -726,6 +728,7 @@ public final class CraftServer implements Server {
          playerList.getIPBans().load();
          playerList.getNameBans().load();
  
@@ -78,7 +78,7 @@ index d9396f1..acd5b42 100644
          for (WorldServer world : console.worlds) {
              world.difficulty = difficulty;
              world.setSpawnFlags(monsters, animals);
-@@ -574,11 +577,13 @@ public final class CraftServer implements Server {
+@@ -740,11 +743,14 @@ public final class CraftServer implements Server {
              } else {
                  world.ticksPerMonsterSpawns = this.getTicksPerMonsterSpawns();
              }
@@ -89,12 +89,13 @@ index d9396f1..acd5b42 100644
          commandMap.clearCommands();
          resetRecipes();
 +        org.spigotmc.SpigotConfig.registerCommands(); // Spigot
++
+         overrideAllCommandBlockCommands = commandsConfiguration.getStringList("command-block-overrides").contains("*");
  
          int pollCount = 0;
- 
 diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
 new file mode 100644
-index 0000000..2f2752a
+index 0000000..3dfe4ed
 --- /dev/null
 +++ b/src/main/java/org/spigotmc/SpigotConfig.java
 @@ -0,0 +1,120 @@
@@ -144,8 +145,8 @@ index 0000000..2f2752a
 +
 +        commands = new HashMap<String, Command>();
 +
-+        version = getInt( "config-version", 3 );
-+        set( "config-version", 3 );
++        version = getInt( "config-version", 5 );
++        set( "config-version", 5 );
 +        readConfig( SpigotConfig.class, null );
 +    }
 +
@@ -296,5 +297,5 @@ index 0000000..961ddb4
 +    }
 +}
 -- 
-1.8.1.2
+1.8.5.2.msysgit.0
 

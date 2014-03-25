@@ -1,4 +1,4 @@
-From d3a7f5809eceb7dbeda6ba6d77fd284b295b00c6 Mon Sep 17 00:00:00 2001
+From 10a9ecc0525f696d36f969090d5393b0c29c151d Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 2 Jun 2013 11:17:05 +1000
 Subject: [PATCH] Enchanced Timings
@@ -17,7 +17,7 @@ index fb3c90f..ffbcac1 100644
          Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
  
 diff --git a/src/main/java/org/bukkit/command/defaults/TimingsCommand.java b/src/main/java/org/bukkit/command/defaults/TimingsCommand.java
-index 7c28b75..ec1320f 100644
+index 7c28b75..69d629c 100644
 --- a/src/main/java/org/bukkit/command/defaults/TimingsCommand.java
 +++ b/src/main/java/org/bukkit/command/defaults/TimingsCommand.java
 @@ -35,7 +35,7 @@ public class TimingsCommand extends BukkitCommand {
@@ -29,7 +29,7 @@ index 7c28b75..ec1320f 100644
          this.setPermission("bukkit.command.timings");
      }
  
-@@ -46,14 +46,33 @@ public class TimingsCommand extends BukkitCommand {
+@@ -46,14 +46,34 @@ public class TimingsCommand extends BukkitCommand {
              sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
              return false;
          }
@@ -42,12 +42,13 @@ index 7c28b75..ec1320f 100644
 +        // Spigot start - dynamic enable
 +        if ( "on".equals( args[0] ) )
 +        {
-+            ( (org.bukkit.plugin.SimplePluginManager) Bukkit.getPluginManager() ).useTimings( true );
-+            sender.sendMessage( "Enabled Timings" );
++            // ( (org.bukkit.plugin.SimplePluginManager) Bukkit.getPluginManager() ).useTimings( true );
++            sender.sendMessage( ChatColor.RED + "This command is disabled as it does not produce accurate results. Please enable plugin-profiling in bukkit.yml and restart." );
++            sender.sendMessage( ChatColor.RED + "Please see http://www.spigotmc.org/wiki/disabled-timings-on-command/ for further information." );
 +        } else if ( "off".equals( args[0] ) )
 +        {
-+            ( (org.bukkit.plugin.SimplePluginManager) Bukkit.getPluginManager() ).useTimings( false );
-+            sender.sendMessage( "Disabled Timings" );
++            sender.sendMessage( ChatColor.RED + "This command is disabled as it does not produce accurate results. Please disable plugin-profiling in bukkit.yml and restart." );
++            sender.sendMessage( ChatColor.RED + "Please see http://www.spigotmc.org/wiki/disabled-timings-on-command/ for further information." );
          }
 +        // Spigot end
  
@@ -65,7 +66,7 @@ index 7c28b75..ec1320f 100644
              for (HandlerList handlerList : HandlerList.getHandlerLists()) {
                  for (RegisteredListener listener : handlerList.getRegisteredListeners()) {
                      if (listener instanceof TimedRegisteredListener) {
-@@ -61,10 +80,18 @@ public class TimingsCommand extends BukkitCommand {
+@@ -61,10 +81,18 @@ public class TimingsCommand extends BukkitCommand {
                      }
                  }
              }
@@ -87,7 +88,7 @@ index 7c28b75..ec1320f 100644
              int index = 0;
              int pluginIdx = 0;
              File timingFolder = new File("timings");
-@@ -99,12 +126,15 @@ public class TimingsCommand extends BukkitCommand {
+@@ -99,12 +127,15 @@ public class TimingsCommand extends BukkitCommand {
                              totalTime += time;
                              Class<? extends Event> eventClass = trl.getEventClass();
                              if (count > 0 && eventClass != null) {
@@ -104,7 +105,7 @@ index 7c28b75..ec1320f 100644
                  fileTimings.println( "Sample time " + sampleTime + " (" + sampleTime / 1E9 + "s)" ); // Spigot
                  // Spigot start
                  if ( paste )
-@@ -114,6 +144,7 @@ public class TimingsCommand extends BukkitCommand {
+@@ -114,6 +145,7 @@ public class TimingsCommand extends BukkitCommand {
                  }
                  // Spigot end
                  sender.sendMessage("Timings written to " + timings.getPath());
@@ -113,7 +114,7 @@ index 7c28b75..ec1320f 100644
              } catch (IOException e) {
              } finally {
 diff --git a/src/main/java/org/bukkit/plugin/TimedRegisteredListener.java b/src/main/java/org/bukkit/plugin/TimedRegisteredListener.java
-index d86805b..4b744ea 100644
+index e09234c..ab2c65e 100644
 --- a/src/main/java/org/bukkit/plugin/TimedRegisteredListener.java
 +++ b/src/main/java/org/bukkit/plugin/TimedRegisteredListener.java
 @@ -11,6 +11,10 @@ import org.bukkit.event.Listener;
@@ -166,10 +167,10 @@ index d86805b..4b744ea 100644
  
      /**
 diff --git a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
-index ea30d83..d905435 100644
+index b178c0d..a1639f8 100644
 --- a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
 +++ b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
-@@ -430,7 +430,7 @@ public class JavaPluginLoader implements PluginLoader {
+@@ -297,7 +297,7 @@ public final class JavaPluginLoader implements PluginLoader {
                      }
                  }
              };
@@ -372,5 +373,5 @@ index b206b1f..01b62fb 100644
          Listener listener = new Listener() {};
          EventExecutor executor = new EventExecutor() {
 -- 
-1.8.1.2
+1.8.5.2.msysgit.0
 

@@ -1,15 +1,15 @@
-From 671c8e6f49c82a03125fb9983a3d1df081f6ccd7 Mon Sep 17 00:00:00 2001
+From 8bba02b152cd01cec04b8d95b96dbc3c357760ea Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 2 Jun 2013 15:10:56 +1000
 Subject: [PATCH] Skeleton API Implementations
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index e8315dd..fc71833 100644
+index a4ede34..d9fbd00 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -1267,4 +1267,14 @@ public class CraftWorld implements World {
-             cps.queueUnload(chunk.x, chunk.z);
+@@ -1280,4 +1280,14 @@ public class CraftWorld implements World {
+             cps.queueUnload(chunk.locX, chunk.locZ);
          }
      }
 +    // Spigot start
@@ -24,12 +24,12 @@ index e8315dd..fc71833 100644
 +    // Spigot end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftArrow.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftArrow.java
-index b46b9c4..a386001 100644
+index 4f8d47d..09e7223 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftArrow.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftArrow.java
-@@ -40,4 +40,15 @@ public class CraftArrow extends AbstractProjectile implements Arrow {
-     public EntityType getType() {
-         return EntityType.ARROW;
+@@ -71,4 +71,15 @@ public class CraftArrow extends AbstractProjectile implements Arrow {
+     public void _INVALID_setShooter(LivingEntity shooter) {
+         getHandle().shooter = ((CraftLivingEntity) shooter).getHandle();
      }
 +
 +    // Spigot start
@@ -44,10 +44,10 @@ index b46b9c4..a386001 100644
 +    // Spigot end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-index d9659fb..4f4b84f 100644
+index fe0f200..e026c1f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-@@ -398,4 +398,15 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
+@@ -399,4 +399,15 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
  
          return getHandle().vehicle.getBukkitEntity();
      }
@@ -64,12 +64,12 @@ index d9659fb..4f4b84f 100644
 +    // Spigot end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index ac73273..63ce45a 100644
+index da574e0..b045cb9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1072,4 +1072,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1252,4 +1252,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          }
-         collection.add(new AttributeModifiable(getHandle().aX(), (new AttributeRanged("generic.maxHealth", scaledHealth ? healthScale : getMaxHealth(), 0.0D, Float.MAX_VALUE)).a("Max Health").a(true)));
+         collection.add(new AttributeModifiable(getHandle().bb(), (new AttributeRanged("generic.maxHealth", scaledHealth ? healthScale : getMaxHealth(), 0.0D, Float.MAX_VALUE)).a("Max Health").a(true)));
      }
 +
 +    // Spigot start
@@ -84,5 +84,5 @@ index ac73273..63ce45a 100644
 +    // Spigot end
  }
 -- 
-1.8.1.2
+1.8.5.2.msysgit.0
 

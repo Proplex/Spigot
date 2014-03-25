@@ -1,14 +1,14 @@
-From 89188699eec6514aae0bc53904a2fe8f732630bf Mon Sep 17 00:00:00 2001
+From 8a5eb17b5a35a0b462a4538921f84c529fc5ae20 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Fri, 21 Jun 2013 17:17:20 +1000
 Subject: [PATCH] Crop Growth Rates
 
 
 diff --git a/src/main/java/net/minecraft/server/Block.java b/src/main/java/net/minecraft/server/Block.java
-index 2a85c1c..afe8735 100644
+index 14c00c5..51f8279 100644
 --- a/src/main/java/net/minecraft/server/Block.java
 +++ b/src/main/java/net/minecraft/server/Block.java
-@@ -781,4 +781,16 @@ public class Block {
+@@ -804,4 +804,16 @@ public class Block {
          return 0;
      }
      // CraftBukkit end
@@ -26,7 +26,7 @@ index 2a85c1c..afe8735 100644
 +    // Spigot end
  }
 diff --git a/src/main/java/net/minecraft/server/BlockCactus.java b/src/main/java/net/minecraft/server/BlockCactus.java
-index 03eece7..758ab84 100644
+index 57eb59d..6778cae 100644
 --- a/src/main/java/net/minecraft/server/BlockCactus.java
 +++ b/src/main/java/net/minecraft/server/BlockCactus.java
 @@ -23,7 +23,7 @@ public class BlockCactus extends Block {
@@ -35,27 +35,30 @@ index 03eece7..758ab84 100644
  
 -                if (i1 == 15) {
 +                if (i1 >= (byte) range(3, (world.growthOdds / world.spigotConfig.cactusModifier * 15) + 0.5F, 15)) { // Spigot
-                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this.id, 0); // CraftBukkit
+                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this, 0); // CraftBukkit
                      world.setData(i, j, k, 0, 4);
-                     this.doPhysics(world, i, j + 1, k, this.id);
+                     this.doPhysics(world, i, j + 1, k, this);
 diff --git a/src/main/java/net/minecraft/server/BlockCrops.java b/src/main/java/net/minecraft/server/BlockCrops.java
-index e157fbe..84a809b 100644
+index 942d6ab..c46879c 100644
 --- a/src/main/java/net/minecraft/server/BlockCrops.java
 +++ b/src/main/java/net/minecraft/server/BlockCrops.java
-@@ -28,7 +28,7 @@ public class BlockCrops extends BlockFlower {
+@@ -27,9 +27,8 @@ public class BlockCrops extends BlockPlant implements IBlockFragilePlantElement
              if (l < 7) {
-                 float f = this.k(world, i, j, k);
+                 float f = this.n(world, i, j, k);
  
 -                if (random.nextInt((int) (25.0F / f) + 1) == 0) {
+-                    ++l;
+-                    org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j, k, this, l); // CraftBukkit
 +                if (random.nextInt((int) (world.growthOdds / world.spigotConfig.wheatModifier * (25.0F / f)) + 1) == 0) { // Spigot
-                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j, k, this.id, ++l); // CraftBukkit
++                    org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j, k, this, ++l); // CraftBukkit
                  }
              }
+         }
 diff --git a/src/main/java/net/minecraft/server/BlockGrass.java b/src/main/java/net/minecraft/server/BlockGrass.java
-index 6f9301d..2ccc0b8 100644
+index bf14bbb..638ff49 100644
 --- a/src/main/java/net/minecraft/server/BlockGrass.java
 +++ b/src/main/java/net/minecraft/server/BlockGrass.java
-@@ -32,7 +32,8 @@ public class BlockGrass extends Block {
+@@ -38,7 +38,8 @@ public class BlockGrass extends Block implements IBlockFragilePlantElement {
                  }
                  // CraftBukkit end
              } else if (world.getLightLevel(i, j + 1, k) >= 9) {
@@ -66,10 +69,10 @@ index 6f9301d..2ccc0b8 100644
                      int j1 = j + random.nextInt(5) - 3;
                      int k1 = k + random.nextInt(3) - 1;
 diff --git a/src/main/java/net/minecraft/server/BlockMushroom.java b/src/main/java/net/minecraft/server/BlockMushroom.java
-index 796527d..b4a6800 100644
+index 75fe4c0..adb90b6 100644
 --- a/src/main/java/net/minecraft/server/BlockMushroom.java
 +++ b/src/main/java/net/minecraft/server/BlockMushroom.java
-@@ -24,7 +24,7 @@ public class BlockMushroom extends BlockFlower {
+@@ -23,7 +23,7 @@ public class BlockMushroom extends BlockPlant implements IBlockFragilePlantEleme
  
      public void a(World world, int i, int j, int k, Random random) {
          final int sourceX = i, sourceY = j, sourceZ = k; // CraftBukkit
@@ -79,10 +82,10 @@ index 796527d..b4a6800 100644
              int l = 5;
  
 diff --git a/src/main/java/net/minecraft/server/BlockMycel.java b/src/main/java/net/minecraft/server/BlockMycel.java
-index 1de8c83..fa11d1c 100644
+index a01a6e6..2854bbc 100644
 --- a/src/main/java/net/minecraft/server/BlockMycel.java
 +++ b/src/main/java/net/minecraft/server/BlockMycel.java
-@@ -32,7 +32,8 @@ public class BlockMycel extends Block {
+@@ -33,7 +33,8 @@ public class BlockMycel extends Block {
                  }
                  // CraftBukkit end
              } else if (world.getLightLevel(i, j + 1, k) >= 9) {
@@ -93,23 +96,23 @@ index 1de8c83..fa11d1c 100644
                      int j1 = j + random.nextInt(5) - 3;
                      int k1 = k + random.nextInt(3) - 1;
 diff --git a/src/main/java/net/minecraft/server/BlockReed.java b/src/main/java/net/minecraft/server/BlockReed.java
-index 8657860..cf52501 100644
+index a1350f6..6c04ad2 100644
 --- a/src/main/java/net/minecraft/server/BlockReed.java
 +++ b/src/main/java/net/minecraft/server/BlockReed.java
-@@ -23,7 +23,7 @@ public class BlockReed extends Block {
-             if (l < 3) {
-                 int i1 = world.getData(i, j, k);
+@@ -24,7 +24,7 @@ public class BlockReed extends Block {
+                 if (l < 3) {
+                     int i1 = world.getData(i, j, k);
  
--                if (i1 == 15) {
-+                if (i1 >= (byte) range(3, (world.growthOdds / world.spigotConfig.caneModifier * 15) + 0.5F, 15)) { // Spigot
-                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this.id, 0); // CraftBukkit
-                     world.setData(i, j, k, 0, 4);
-                 } else {
+-                    if (i1 == 15) {
++                    if (i1 >= (byte) range(3, (world.growthOdds / world.spigotConfig.caneModifier * 15) + 0.5F, 15)) { // Spigot
+                         org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this, 0); // CraftBukkit
+                         world.setData(i, j, k, 0, 4);
+                     } else {
 diff --git a/src/main/java/net/minecraft/server/BlockSapling.java b/src/main/java/net/minecraft/server/BlockSapling.java
-index 706d6c9..fe675b3 100644
+index 830eb65..24c95ef 100644
 --- a/src/main/java/net/minecraft/server/BlockSapling.java
 +++ b/src/main/java/net/minecraft/server/BlockSapling.java
-@@ -25,7 +25,7 @@ public class BlockSapling extends BlockFlower {
+@@ -26,7 +26,7 @@ public class BlockSapling extends BlockPlant implements IBlockFragilePlantElemen
      public void a(World world, int i, int j, int k, Random random) {
          if (!world.isStatic) {
              super.a(world, i, j, k, random);
@@ -119,25 +122,25 @@ index 706d6c9..fe675b3 100644
              }
          }
 diff --git a/src/main/java/net/minecraft/server/BlockStem.java b/src/main/java/net/minecraft/server/BlockStem.java
-index f2d4e57..5fe0a81 100644
+index 4fae805..a90fab1 100644
 --- a/src/main/java/net/minecraft/server/BlockStem.java
 +++ b/src/main/java/net/minecraft/server/BlockStem.java
-@@ -27,7 +27,7 @@ public class BlockStem extends BlockFlower {
+@@ -26,7 +26,7 @@ public class BlockStem extends BlockPlant implements IBlockFragilePlantElement {
          if (world.getLightLevel(i, j + 1, k) >= 9) {
-             float f = this.m(world, i, j, k);
+             float f = this.n(world, i, j, k);
  
 -            if (random.nextInt((int) (25.0F / f) + 1) == 0) {
-+            if (random.nextInt((int) (world.growthOdds / (this.id == Block.PUMPKIN_STEM.id ? world.spigotConfig.pumpkinModifier : world.spigotConfig.melonModifier) * (25.0F / f)) + 1) == 0) { // Spigot
++            if (random.nextInt((int) (world.growthOdds / (this == Blocks.PUMPKIN_STEM? world.spigotConfig.pumpkinModifier : world.spigotConfig.melonModifier) * (25.0F / f)) + 1) == 0) { // Spigot
                  int l = world.getData(i, j, k);
  
                  if (l < 7) {
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-index 478d9e6..1c598ed 100644
+index 90a227f..7e79ba5 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-@@ -75,4 +75,36 @@ public class SpigotWorldConfig
-         chunksPerTick = getInt( "chunks-per-tick", 650 );
-         log( "Chunks to Grow per Tick: " + chunksPerTick );
+@@ -79,4 +79,35 @@ public class SpigotWorldConfig
+         clearChunksOnTick = getBoolean( "clear-tick-list", false );
+         log( "Clear tick list: " + clearChunksOnTick );
      }
 +
 +    // Crop growth rates
@@ -148,30 +151,29 @@ index 478d9e6..1c598ed 100644
 +    public int pumpkinModifier;
 +    public int saplingModifier;
 +    public int wheatModifier;
++    private int getAndValidateGrowth(String crop)
++    {
++        int modifier = getInt( "growth." + crop.toLowerCase() + "-modifier", 100 );
++        if ( modifier == 0 )
++        {
++            log( "Cannot set " + crop + " growth to zero, defaulting to 100" );
++            modifier = 100;
++        }
++        log( crop + " Growth Modifier: " + modifier + "%" );
++
++        return modifier;
++    }
 +    private void growthModifiers()
 +    {
-+        cactusModifier = getInt( "growth.cactus-modifier", 100 );
-+        log( "Cactus Growth Modifier: " + cactusModifier + "%" );
-+
-+        caneModifier = getInt( "growth.cane-modifier", 100 );
-+        log( "Cane Growth Modifier: " + caneModifier + "%" );
-+
-+        melonModifier = getInt( "growth.melon-modifier", 100 );
-+        log( "Melon Growth Modifier: " + melonModifier + "%" );
-+
-+        mushroomModifier = getInt( "growth.mushroom-modifier", 100 );
-+        log( "Mushroom Growth Modifier: " + mushroomModifier + "%" );
-+
-+        pumpkinModifier = getInt( "growth.pumpkin-modifier", 100 );
-+        log( "Pumpkin Growth Modifier: " + pumpkinModifier + "%" );
-+
-+        saplingModifier = getInt( "growth.sapling-modifier", 100 );
-+        log( "Sapling Growth Modifier: " + saplingModifier + "%" );
-+
-+        wheatModifier = getInt( "growth.wheat-modifier", 100 );
-+        log( "Wheat Growth Modifier: " + wheatModifier + "%" );
++        cactusModifier = getAndValidateGrowth( "Cactus" );
++        caneModifier = getAndValidateGrowth( "Cane" );
++        melonModifier = getAndValidateGrowth( "Melon" );
++        mushroomModifier = getAndValidateGrowth( "Mushroom" );
++        pumpkinModifier = getAndValidateGrowth( "Pumpkin" );
++        saplingModifier = getAndValidateGrowth( "Sapling" );
++        wheatModifier = getAndValidateGrowth( "Wheat" );
 +    }
  }
 -- 
-1.8.1.2
+1.8.5.2.msysgit.0
 
